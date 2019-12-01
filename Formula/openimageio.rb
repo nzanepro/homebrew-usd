@@ -38,22 +38,17 @@ class Openimageio < Formula
     ]
 
     # CMake picks up the system's python dylib, even if we have a brewed one.
-    pyver = Language::Python.major_minor_version "python"
-    pyprefix = Formula["python"].opt_frameworks/"Python.framework/Versions/#{pyver}"
+    pyver = Language::Python.major_minor_version "python2"
+    pyprefix = Formula["python@2"].opt_frameworks/"Python.framework/Versions/#{pyver}"
 
     ENV["PYTHONPATH"] = lib/"python#{pyver}/site-packages"
 
-    args << "-DPYTHON_EXECUTABLE=#{pyprefix}/bin/python"
-    args << "-DPYTHON_LIBRARY=#{pyprefix}/lib/libpython#{pyver}.dylib"
-    args << "-DPYTHON_INCLUDE_DIR=#{pyprefix}/include/python#{pyver}m"
+    args << "-DPYTHON_EXECUTABLE='#{pyprefix}/bin/python2'"
+    args << "-DPYTHON_LIBRARY='#{pyprefix}/lib/libpython#{pyver}.dylib'"
+    args << "-DPYTHON_INCLUDE_DIR='#{pyprefix}/include/python#{pyver}'"
 
     # CMake picks up boost-python instead of boost-python
     args << "-DBOOST_ROOT=#{Formula["boost"].opt_prefix}"
-    args << "-DBoost_PYTHON_LIBRARIES=#{Formula["boost-python"].opt_lib}/libboost_python#{pyver.to_s.delete(".")}-mt.dylib"
-
-    # This is strange, but must be set to make the hack above work
-    args << "-DBoost_PYTHON_LIBRARY_DEBUG=''"
-    args << "-DBoost_PYTHON_LIBRARY_RELEASE=''"
 
     mkdir "build" do
       system "cmake", "..", *args

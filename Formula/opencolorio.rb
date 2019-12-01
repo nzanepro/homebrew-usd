@@ -12,17 +12,18 @@ class Opencolorio < Formula
   depends_on "python@2"
 
   def install
-    py_config = `python-config --configdir`.chomp
-    py_include = `python -c "import distutils.sysconfig as s; print(s.get_python_inc())"`.chomp
-    py_version = Language::Python.major_minor_version "python"
-
     args = std_cmake_args + %W[
       -DCMAKE_VERBOSE_MAKEFILE=OFF
-      -DPYTHON=python
-      -DPYTHON_EXECUTABLE=#{which "python"}
-      -DPYTHON_LIBRARY=#{py_config}/libpython#{py_version}.dylib
-      -DPYTHON_INCLUDE_DIR=#{py_include}
     ]
+
+    pyver = Language::Python.major_minor_version "python2"
+    pyprefix = Formula["python@2"].opt_frameworks/"Python.framework/Versions/#{pyver}"
+
+    ENV["PYTHONPATH"] = lib/"python#{pyver}/site-packages"
+
+    args << "-DPYTHON_EXECUTABLE='#{pyprefix}/bin/python2'"
+    args << "-DPYTHON_LIBRARY='#{pyprefix}/lib/libpython#{pyver}.dylib'"
+    args << "-DPYTHON_INCLUDE_DIR='#{pyprefix}/include/python#{pyver}'"
 
     mkdir "macbuild" do
       system "cmake", *args, ".."
@@ -48,5 +49,12 @@ class Opencolorio < Formula
 
   test do
     assert_match "validate", shell_output("#{bin}/ociocheck --help", 1)
+    output = <<~EOS
+      from __future__ import print_function
+      import PyOpenColorIO
+      # print(dir(PyOpenColorIO))
+    EOS
+    assert_match "", pipe_output("python", output, 0)
+
   end
 end

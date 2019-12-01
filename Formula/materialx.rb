@@ -9,6 +9,8 @@ class Materialx < Formula
   depends_on "nzanepro/usd/openimageio"
 
   def install
+    pyver = Language::Python.major_minor_version "python2"
+
     system "cmake",
            "-DCMAKE_INSTALL_PREFIX:PATH=#{prefix}",
            "-DMATERIALX_BUILD_PYTHON=ON",
@@ -17,9 +19,19 @@ class Materialx < Formula
            "-DMATERIALX_PYTHON_EXECUTABLE=#{HOMEBREW_PREFIX}/bin/python2.7",
            "."
     system "make", "install"
+
+    site_packages = "lib/python#{pyver}/site-packages"
+    pth_contents = "import site; site.addsitedir('#{prefix}/python')\n"
+    (prefix/site_packages/"homebrew-materialx.pth").write pth_contents
+    system "install_name_tool", "-add_rpath", "#{prefix}/python/MaterialX", "#{prefix}/python/MaterialX/PyMaterialXFormat.so"
   end
 
   test do
-    system "true"
+    output = <<~EOS
+      from __future__ import print_function
+      import MaterialX
+      # print(dir(MaterialX))
+    EOS
+    assert_match "", pipe_output("python", output, 0)
   end
 end
