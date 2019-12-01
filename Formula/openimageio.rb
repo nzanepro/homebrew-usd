@@ -9,7 +9,7 @@ class Openimageio < Formula
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "boost"
-  depends_on "boost-python"
+  depends_on "nzanepro/usd/boost-python@2"
   depends_on "ffmpeg"
   depends_on "freetype"
   depends_on "giflib"
@@ -18,7 +18,7 @@ class Openimageio < Formula
   depends_on "libpng"
   depends_on "libraw"
   depends_on "libtiff"
-  depends_on "opencolorio"
+  depends_on "nzanepro/usd/opencolorio"
   depends_on "openexr"
   depends_on "python@2"
   depends_on "webp"

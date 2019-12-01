@@ -7,7 +7,6 @@ class Materialx < Formula
   depends_on "cmake" => :build
   depends_on "python@2"
   depends_on "nzanepro/usd/openimageio"
-  depends_on "nzanepro/usd/opencolorio"
 
   def install
     system "cmake",
