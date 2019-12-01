@@ -6,16 +6,10 @@ class Openimageio < Formula
   revision 1
   head "https://github.com/OpenImageIO/oiio.git"
 
-  bottle do
-    sha256 "dc633d309fa0cef5e40201de4d61e625d3bd67554a5dff0f950824b45a41ca14" => :catalina
-    sha256 "78a00ffb2b239073cc9f95f2305590de635e728d472298b4d6350becb39ec7f6" => :mojave
-    sha256 "16127634c9ac64d567d67b7022fa906dbe62c5902527e887b1cedf18285b6ea2" => :high_sierra
-  end
-
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "boost"
-  depends_on "nzanepro/usd/boost-python"
+  depends_on "boost-python"
   depends_on "ffmpeg"
   depends_on "freetype"
   depends_on "giflib"
